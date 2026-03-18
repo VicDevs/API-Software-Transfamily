@@ -17,16 +17,16 @@ public abstract class ChecklistMapper {
     protected ChecklistRepository checklistRepository;
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "criadoEm", ignore = true)
-    @Mapping(target = "veiculo", source = "veiculo")
-    @Mapping(target = "motorista", source = "motorista")
+    @Mapping(target = "viagem", ignore = true)
     @Mapping(target = "template", source = "template")
+    @Mapping(target = "status", constant = "ABERTO")
     @Mapping(target = "kmAtual", source = "dto.kmAtual")
     @Mapping(target = "itens", ignore = true)
-    public abstract Checklist toEntity(ChecklistRequestDTO dto, Veiculo veiculo, Motorista motorista, ChecklistTemplate template);
+    public abstract Checklist toEntity(ChecklistRequestDTO dto, ChecklistTemplate template);
 
-    @Mapping(source = "veiculo.placa", target = "placaVeiculo")
-    @Mapping(source = "motorista.nome", target = "nomeMotorista")
+    @Mapping(source = "viagem.veiculo.placa", target = "placaVeiculo")
+    @Mapping(source = "viagem.motorista.nome", target = "nomeMotorista")
+    @Mapping(source = "viagem.id", target = "viagemId")
     public abstract ChecklistResponseDTO toResponseDTO(Checklist checklist);
 
     @Mapping(source = "checklistTemplateItem.descricao", target = "descricao")

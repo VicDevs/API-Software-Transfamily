@@ -9,5 +9,4 @@ import java.util.Optional;
 
 public interface ChecklistRepository extends JpaRepository<Checklist,Long> {
 
-    Optional<Checklist> findByVeiculoIdAndStatus(Long veiculoId, StatusChecklist status);
 }

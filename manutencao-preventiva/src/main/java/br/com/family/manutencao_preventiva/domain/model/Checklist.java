@@ -26,26 +26,24 @@ public class Checklist {
 
     @Column(nullable = false)
     @Setter
-    private Integer kmAtual;
-
-    @Column(nullable = false)
-    @Setter
     private StatusChecklist status = StatusChecklist.ABERTO;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "veiculo_id", nullable = false)
-    @Setter
-    private Veiculo veiculo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "template_id", nullable = false)
     @Setter
     private ChecklistTemplate template;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "motorista_id", nullable = false)
+    @ManyToOne(fetch =  FetchType.LAZY)
+    @JoinColumn(name = "viagem_id")
     @Setter
-    private Motorista motorista;
+    private Viagem viagem;
+
+    @Setter
+    private Integer kmAtual;
+
+    @Setter
+    private String tipo;
+
 
     @OneToMany(mappedBy = "checklist", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("ordem ASC")
@@ -73,5 +71,6 @@ public class Checklist {
         this.itens.remove(item);
         item.setChecklist(null);
     }
+
 }
 

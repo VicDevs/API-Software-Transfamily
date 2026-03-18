@@ -2,8 +2,8 @@ package br.com.family.manutencao_preventiva.service;
 
 import br.com.family.manutencao_preventiva.domain.enums.RespostaItem;
 import br.com.family.manutencao_preventiva.domain.enums.StatusChecklist;
+import br.com.family.manutencao_preventiva.domain.enums.StatusViagem;
 import br.com.family.manutencao_preventiva.domain.model.*;
-import br.com.family.manutencao_preventiva.dto.request.ChecklistRequestDTO;
 import br.com.family.manutencao_preventiva.dto.request.ChecklistUpdateDTO;
 import br.com.family.manutencao_preventiva.dto.response.ChecklistResponseDTO;
 import br.com.family.manutencao_preventiva.exception.BusinessException;
@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,37 +28,30 @@ public class ChecklistService {
     private final CheklistTemplateMapper templateMapper;
 
     @Transactional
-    public ChecklistResponseDTO iniciar(ChecklistRequestDTO dto, Motorista motorista) {
-
-        return checklistRepository.findByVeiculoIdAndStatus(dto.veiculoId(), StatusChecklist.ABERTO)
-                .map(checklistMapper::toResponseDTO)
-                .orElseGet(() -> {
-
-                    Veiculo veiculo = veiculoMapper.mapVeiculo(dto.veiculoId());
-                    ChecklistTemplate template = templateMapper.mapTemplate(dto.templateId());
-
-                    veiculo.validarNovaQuilometragem(dto.kmAtual());
-
-                    Checklist novoChecklist = checklistMapper.toEntity(dto, veiculo, motorista, template);
-
-                    template.getItens().forEach(itemTemplate -> {
-                        ChecklistItem novoItem = checklistMapper.toChecklistItem(itemTemplate);
-                        novoChecklist.addItem(novoItem);
-                    });
-
-                    return checklistMapper.toResponseDTO(checklistRepository.save(novoChecklist));
-                });
-    }
-
-    @Transactional
-    public Checklist salvarEFinalizar(Long checklistId, ChecklistUpdateDTO lote) {
-
+    public ChecklistResponseDTO salvarEFinalizar(Long checklistId, ChecklistUpdateDTO lote) {
         Checklist checklist = checklistMapper.mapChecklist(checklistId);
 
         if (checklist.getStatus() != StatusChecklist.ABERTO) {
             throw new BusinessException("Este checklist já não está mais aberto para edições.");
         }
 
+        atualizarRespostas(checklist, lote);
+
+        checklist.finalizar();
+
+        if ("RETORNO".equalsIgnoreCase(checklist.getTipo())) {
+            Viagem viagem = checklist.getViagem();
+            viagem.setStatus(StatusViagem.CONCLUIDA);
+            viagem.setDataFim(LocalDateTime.now());
+            viagem.setKmRetorno(checklist.getKmAtual());
+
+            checklist.getViagem().getVeiculo().atualizarQuilometragem(checklist.getKmAtual());
+        }
+
+        return checklistMapper.toResponseDTO(checklistRepository.save(checklist));
+    }
+
+    private void atualizarRespostas(Checklist checklist, ChecklistUpdateDTO lote) {
         var itensMap = checklist.getItens().stream()
                 .collect(Collectors.toMap(ChecklistItem::getId, item -> item));
 
@@ -69,18 +63,8 @@ public class ChecklistService {
             }
         }
 
-        boolean possuiPendencias = checklist.getItens().stream()
-                .anyMatch(item -> item.getRespostaItem() == RespostaItem.PENDENTE);
-
-        if (possuiPendencias) {
-            throw new BusinessException("Não é possível finalizar: ainda existem itens pendentes.");
+        if (checklist.getItens().stream().anyMatch(i -> i.getRespostaItem() == RespostaItem.PENDENTE)) {
+            throw new BusinessException("Ainda existem itens pendentes.");
         }
-
-        checklist.finalizar();
-
-        checklist.getVeiculo().atualizarQuilometragem(checklist.getKmAtual());
-
-        return checklistRepository.save(checklist);
     }
-
 }

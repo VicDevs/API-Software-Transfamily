@@ -8,6 +8,7 @@ import br.com.family.manutencao_preventiva.domain.model.ChecklistTemplate;
 import br.com.family.manutencao_preventiva.domain.model.ChecklistTemplateItem;
 import br.com.family.manutencao_preventiva.domain.model.Motorista;
 import br.com.family.manutencao_preventiva.domain.model.Veiculo;
+import br.com.family.manutencao_preventiva.domain.model.Viagem;
 import br.com.family.manutencao_preventiva.dto.request.ChecklistRequestDTO;
 import br.com.family.manutencao_preventiva.dto.response.ChecklistItemResponseDTO;
 import br.com.family.manutencao_preventiva.dto.response.ChecklistResponseDTO;
@@ -18,15 +19,15 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-12T03:10:43-0300",
+    date = "2026-03-18T01:15:46-0300",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class ChecklistMapperImpl extends ChecklistMapper {
 
     @Override
-    public Checklist toEntity(ChecklistRequestDTO dto, Veiculo veiculo, Motorista motorista, ChecklistTemplate template) {
-        if ( dto == null && veiculo == null && motorista == null && template == null ) {
+    public Checklist toEntity(ChecklistRequestDTO dto, ChecklistTemplate template) {
+        if ( dto == null && template == null ) {
             return null;
         }
 
@@ -35,9 +36,8 @@ public class ChecklistMapperImpl extends ChecklistMapper {
         if ( dto != null ) {
             checklist.setKmAtual( dto.kmAtual() );
         }
-        checklist.setVeiculo( veiculo );
-        checklist.setMotorista( motorista );
         checklist.setTemplate( template );
+        checklist.setStatus( StatusChecklist.ABERTO );
 
         return checklist;
     }
@@ -50,19 +50,23 @@ public class ChecklistMapperImpl extends ChecklistMapper {
 
         String placaVeiculo = null;
         String nomeMotorista = null;
+        Long viagemId = null;
         Long id = null;
         StatusChecklist status = null;
         Integer kmAtual = null;
+        String tipo = null;
         List<ChecklistItemResponseDTO> itens = null;
 
-        placaVeiculo = checklistVeiculoPlaca( checklist );
-        nomeMotorista = checklistMotoristaNome( checklist );
+        placaVeiculo = checklistViagemVeiculoPlaca( checklist );
+        nomeMotorista = checklistViagemMotoristaNome( checklist );
+        viagemId = checklistViagemId( checklist );
         id = checklist.getId();
         status = checklist.getStatus();
         kmAtual = checklist.getKmAtual();
+        tipo = checklist.getTipo();
         itens = checklistItemListToChecklistItemResponseDTOList( checklist.getItens() );
 
-        ChecklistResponseDTO checklistResponseDTO = new ChecklistResponseDTO( id, placaVeiculo, nomeMotorista, status, kmAtual, itens );
+        ChecklistResponseDTO checklistResponseDTO = new ChecklistResponseDTO( id, viagemId, placaVeiculo, nomeMotorista, status, kmAtual, tipo, itens );
 
         return checklistResponseDTO;
     }
@@ -107,20 +111,36 @@ public class ChecklistMapperImpl extends ChecklistMapper {
         return checklistItem;
     }
 
-    private String checklistVeiculoPlaca(Checklist checklist) {
-        Veiculo veiculo = checklist.getVeiculo();
+    private String checklistViagemVeiculoPlaca(Checklist checklist) {
+        Viagem viagem = checklist.getViagem();
+        if ( viagem == null ) {
+            return null;
+        }
+        Veiculo veiculo = viagem.getVeiculo();
         if ( veiculo == null ) {
             return null;
         }
         return veiculo.getPlaca();
     }
 
-    private String checklistMotoristaNome(Checklist checklist) {
-        Motorista motorista = checklist.getMotorista();
+    private String checklistViagemMotoristaNome(Checklist checklist) {
+        Viagem viagem = checklist.getViagem();
+        if ( viagem == null ) {
+            return null;
+        }
+        Motorista motorista = viagem.getMotorista();
         if ( motorista == null ) {
             return null;
         }
         return motorista.getNome();
+    }
+
+    private Long checklistViagemId(Checklist checklist) {
+        Viagem viagem = checklist.getViagem();
+        if ( viagem == null ) {
+            return null;
+        }
+        return viagem.getId();
     }
 
     protected List<ChecklistItemResponseDTO> checklistItemListToChecklistItemResponseDTOList(List<ChecklistItem> list) {
