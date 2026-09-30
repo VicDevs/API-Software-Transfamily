@@ -1,10 +1,11 @@
 package br.com.family.manutencao_preventiva.mapper;
 
-import br.com.family.manutencao_preventiva.domain.model.Checklist;
+import br.com.family.manutencao_preventiva.modules.checklist.domain.model.Checklist;
 import br.com.family.manutencao_preventiva.domain.model.Viagem;
-import br.com.family.manutencao_preventiva.dto.response.ChecklistResponseDTO;
+import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistResponseDTO;
 import br.com.family.manutencao_preventiva.dto.response.ViagemResponseDTO;
 import br.com.family.manutencao_preventiva.dto.response.ViagemResumoDTO;
+import br.com.family.manutencao_preventiva.modules.checklist.mapper.ChecklistMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;

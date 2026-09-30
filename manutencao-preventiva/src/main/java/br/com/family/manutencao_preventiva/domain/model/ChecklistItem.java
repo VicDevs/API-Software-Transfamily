@@ -2,6 +2,7 @@ package br.com.family.manutencao_preventiva.domain.model;
 
 import br.com.family.manutencao_preventiva.domain.enums.NivelCriticidade;
 import br.com.family.manutencao_preventiva.domain.enums.RespostaItem;
+import br.com.family.manutencao_preventiva.modules.checklist.domain.model.Checklist;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

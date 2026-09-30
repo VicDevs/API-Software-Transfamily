@@ -2,7 +2,7 @@ package br.com.family.manutencao_preventiva.modules.veiculo.mapper;
 
 import br.com.family.manutencao_preventiva.dto.request.VeiculoRequestDTO;
 import br.com.family.manutencao_preventiva.dto.response.VeiculoResponseDTO;
-import br.com.family.manutencao_preventiva.modules.veiculo.domain.Veiculo;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.model.Veiculo;
 import br.com.family.manutencao_preventiva.modules.veiculo.repository.VeiculoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.mapstruct.Mapper;

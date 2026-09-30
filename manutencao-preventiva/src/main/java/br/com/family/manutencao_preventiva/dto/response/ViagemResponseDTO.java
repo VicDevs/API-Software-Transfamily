@@ -1,6 +1,7 @@
 package br.com.family.manutencao_preventiva.dto.response;
 
 import br.com.family.manutencao_preventiva.domain.enums.StatusViagem;
+import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistResponseDTO;
 
 import java.time.LocalDateTime;
 

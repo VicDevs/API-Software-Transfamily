@@ -1,4 +1,4 @@
-package br.com.family.manutencao_preventiva.modules.veiculo.domain;
+package br.com.family.manutencao_preventiva.modules.veiculo.domain.model;
 
 import br.com.family.manutencao_preventiva.domain.enums.StatusVeiculo;
 import br.com.family.manutencao_preventiva.domain.enums.TipoVeiculo;

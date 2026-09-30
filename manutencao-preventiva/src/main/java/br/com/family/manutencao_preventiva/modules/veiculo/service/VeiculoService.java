@@ -1,14 +1,13 @@
 package br.com.family.manutencao_preventiva.modules.veiculo.service;
 
 import br.com.family.manutencao_preventiva.domain.enums.StatusVeiculo;
-import br.com.family.manutencao_preventiva.modules.veiculo.domain.Veiculo;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.model.Veiculo;
 import br.com.family.manutencao_preventiva.dto.request.VeiculoRequestDTO;
 import br.com.family.manutencao_preventiva.dto.response.VeiculoProntuarioResumoDTO;
 import br.com.family.manutencao_preventiva.dto.response.VeiculoResponseDTO;
 import br.com.family.manutencao_preventiva.exception.BusinessException;
 import br.com.family.manutencao_preventiva.modules.veiculo.mapper.VeiculoMapper;
 import br.com.family.manutencao_preventiva.modules.veiculo.repository.VeiculoRepository;
-import br.com.family.manutencao_preventiva.repository.ViagemRepository;
 import br.com.family.manutencao_preventiva.service.ViagemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -70,7 +69,6 @@ public class VeiculoService {
 
         LocalDateTime inicioDoMes = YearMonth.now().atDay(1).atStartOfDay();
 
-        //criar metodo na classe viagem service para desacoplar
         Integer viagens = viagemService.contarViagensDoVeiculoNoMes(veiculoId, inicioDoMes);
         Long kmRodado = viagemService.somarKmDoVeiculoNoMes(veiculoId, inicioDoMes);
 

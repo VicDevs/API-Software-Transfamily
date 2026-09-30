@@ -1,17 +1,17 @@
-package br.com.family.manutencao_preventiva.mapper;
+package br.com.family.manutencao_preventiva.modules.checklist.mapper;
 
 import br.com.family.manutencao_preventiva.domain.enums.RespostaItem;
-import br.com.family.manutencao_preventiva.domain.enums.StatusChecklist;
-import br.com.family.manutencao_preventiva.domain.model.Checklist;
 import br.com.family.manutencao_preventiva.domain.model.ChecklistItem;
 import br.com.family.manutencao_preventiva.domain.model.ChecklistTemplate;
 import br.com.family.manutencao_preventiva.domain.model.ChecklistTemplateItem;
 import br.com.family.manutencao_preventiva.domain.model.Motorista;
 import br.com.family.manutencao_preventiva.domain.model.Viagem;
-import br.com.family.manutencao_preventiva.dto.request.ChecklistRequestDTO;
 import br.com.family.manutencao_preventiva.dto.response.ChecklistItemResponseDTO;
-import br.com.family.manutencao_preventiva.dto.response.ChecklistResponseDTO;
-import br.com.family.manutencao_preventiva.modules.veiculo.domain.Veiculo;
+import br.com.family.manutencao_preventiva.modules.checklist.domain.enums.StatusChecklist;
+import br.com.family.manutencao_preventiva.modules.checklist.domain.model.Checklist;
+import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistRequestDTO;
+import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistResponseDTO;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.model.Veiculo;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-09-28T19:56:49-0300",
+    date = "2026-09-30T01:21:05-0300",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component

@@ -1,4 +1,4 @@
-package br.com.family.manutencao_preventiva.dto.request;
+package br.com.family.manutencao_preventiva.modules.checklist.dto;
 
 public record ChecklistRequestDTO(
     Long veiculoId,

@@ -1,6 +1,7 @@
-package br.com.family.manutencao_preventiva.dto.response;
+package br.com.family.manutencao_preventiva.modules.checklist.dto;
 
-import br.com.family.manutencao_preventiva.domain.enums.StatusChecklist;
+import br.com.family.manutencao_preventiva.dto.response.ChecklistItemResponseDTO;
+import br.com.family.manutencao_preventiva.modules.checklist.domain.enums.StatusChecklist;
 
 import java.util.List;
 

@@ -1,16 +1,18 @@
 package br.com.family.manutencao_preventiva.service;
 
 import br.com.family.manutencao_preventiva.domain.enums.*;
-import br.com.family.manutencao_preventiva.domain.model.Checklist;
+import br.com.family.manutencao_preventiva.modules.checklist.domain.enums.StatusChecklist;
+import br.com.family.manutencao_preventiva.modules.checklist.domain.model.Checklist;
 import br.com.family.manutencao_preventiva.domain.model.ChecklistTemplate;
 import br.com.family.manutencao_preventiva.domain.model.Motorista;
 import br.com.family.manutencao_preventiva.domain.model.Viagem;
-import br.com.family.manutencao_preventiva.dto.request.ChecklistRequestDTO;
+import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistAtualDTO;
+import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistRequestDTO;
 import br.com.family.manutencao_preventiva.dto.response.*;
 import br.com.family.manutencao_preventiva.exception.BusinessException;
-import br.com.family.manutencao_preventiva.mapper.ChecklistMapper;
-import br.com.family.manutencao_preventiva.modules.veiculo.domain.Veiculo;
-import br.com.family.manutencao_preventiva.modules.veiculo.service.VeiculoService;
+import br.com.family.manutencao_preventiva.modules.checklist.mapper.ChecklistMapper;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.model.Veiculo;
+import br.com.family.manutencao_preventiva.modules.veiculo.mapper.VeiculoMapper;
 import br.com.family.manutencao_preventiva.repository.ChecklistTemplateRepository;
 import br.com.family.manutencao_preventiva.repository.ViagemRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +36,7 @@ public class ViagemService {
 
     private final ViagemRepository viagemRepository;
 
-    private final VeiculoService veiculoService;
+    private final VeiculoMapper veiculoMapper;
     private final ChecklistTemplateRepository templateRepository;
 
     private final ChecklistMapper checklistMapper;
@@ -42,14 +44,13 @@ public class ViagemService {
     @Transactional
     public ViagemDetalhadaDTO iniciarViagem(ChecklistRequestDTO dto, Motorista motorista) {
 
-        // 1. Verificação de veículo ocupado
         if (viagemRepository.existsByVeiculoIdAndStatus(dto.veiculoId(), StatusViagem.EM_CURSO)) {
             throw new BusinessException("Este veículo já possui uma viagem em curso.");
         }
 
-        Veiculo veiculo = veiculoService.buscarPorId(dto.veiculoId());
+        Veiculo veiculo = veiculoMapper.mapVeiculo(dto.veiculoId());
 
-        ChecklistTemplate template = templateRepository.findById(dto.templateId()) // Usando o ID do template vindo do DTO
+        ChecklistTemplate template = templateRepository.findById(dto.templateId())
                 .orElseThrow(() -> new BusinessException("Template não encontrado"));
 
         veiculo.validarNovaQuilometragem(dto.kmAtual());
@@ -200,7 +201,6 @@ public class ViagemService {
         Integer viagens = viagemRepository.contarViagensNoMes(motoristaId, inicioDoMes);
         Long kmRodados = viagemRepository.somarKmRodadosNoMes(motoristaId, inicioDoMes);
 
-        // Tratamento para caso ele não tenha viagens no mês (o SUM retorna null)
         kmRodados = (kmRodados != null) ? kmRodados : 0L;
         viagens = (viagens != null) ? viagens : 0;
 

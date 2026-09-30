@@ -1,14 +1,14 @@
-package br.com.family.manutencao_preventiva.service;
+package br.com.family.manutencao_preventiva.modules.checklist.service;
 
 import br.com.family.manutencao_preventiva.domain.enums.RespostaItem;
-import br.com.family.manutencao_preventiva.domain.enums.StatusChecklist;
-import br.com.family.manutencao_preventiva.domain.model.Checklist;
+import br.com.family.manutencao_preventiva.modules.checklist.domain.enums.StatusChecklist;
+import br.com.family.manutencao_preventiva.modules.checklist.domain.model.Checklist;
 import br.com.family.manutencao_preventiva.domain.model.ChecklistItem;
-import br.com.family.manutencao_preventiva.dto.request.ChecklistUpdateDTO;
-import br.com.family.manutencao_preventiva.dto.response.ChecklistResponseDTO;
+import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistUpdateDTO;
+import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistResponseDTO;
 import br.com.family.manutencao_preventiva.exception.BusinessException;
-import br.com.family.manutencao_preventiva.mapper.ChecklistMapper;
-import br.com.family.manutencao_preventiva.repository.ChecklistRepository;
+import br.com.family.manutencao_preventiva.modules.checklist.mapper.ChecklistMapper;
+import br.com.family.manutencao_preventiva.modules.checklist.repository.ChecklistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
