@@ -1,9 +1,9 @@
-package br.com.family.manutencao_preventiva.mapper;
+package br.com.family.manutencao_preventiva.modules.veiculo.mapper;
 
-import br.com.family.manutencao_preventiva.domain.model.Veiculo;
 import br.com.family.manutencao_preventiva.dto.request.VeiculoRequestDTO;
 import br.com.family.manutencao_preventiva.dto.response.VeiculoResponseDTO;
-import br.com.family.manutencao_preventiva.repository.VeiculoRepository;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.Veiculo;
+import br.com.family.manutencao_preventiva.modules.veiculo.repository.VeiculoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,6 +17,7 @@ public abstract class VeiculoMapper {
     protected VeiculoRepository veiculoRepository;
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
     public abstract Veiculo toEntity(VeiculoRequestDTO dto);
 
     @Mapping(source = "ativo", target = "ativo")

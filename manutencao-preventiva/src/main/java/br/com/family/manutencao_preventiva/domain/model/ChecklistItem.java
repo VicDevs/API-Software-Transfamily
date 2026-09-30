@@ -1,5 +1,6 @@
 package br.com.family.manutencao_preventiva.domain.model;
 
+import br.com.family.manutencao_preventiva.domain.enums.NivelCriticidade;
 import br.com.family.manutencao_preventiva.domain.enums.RespostaItem;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -35,8 +36,14 @@ public class ChecklistItem {
     @Column(nullable = false)
     private String descricao;
 
-    public ChecklistItem(RespostaItem respostaItem, String observacao) {
+    @Setter
+    private NivelCriticidade criticidade;
+
+    private String fotoPath;
+
+    public ChecklistItem(RespostaItem respostaItem, String observacao, String fotoPath) {
         this.respostaItem = respostaItem;
         this.observacao = observacao;
+        this.fotoPath = fotoPath;
     }
 }

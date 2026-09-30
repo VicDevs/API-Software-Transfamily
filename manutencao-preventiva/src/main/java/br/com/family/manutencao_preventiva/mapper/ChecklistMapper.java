@@ -39,6 +39,7 @@ public abstract class ChecklistMapper {
     @Mapping(target = "checklistTemplateItem", source = "itemTemplate")
     @Mapping(target = "respostaItem", constant = "PENDENTE")
     @Mapping(target = "descricao", source = "descricao")
+    @Mapping(target = "criticidade", source = "criticidade")
     public abstract ChecklistItem toChecklistItem(ChecklistTemplateItem itemTemplate);
 
     public Checklist mapChecklist(Long id) {

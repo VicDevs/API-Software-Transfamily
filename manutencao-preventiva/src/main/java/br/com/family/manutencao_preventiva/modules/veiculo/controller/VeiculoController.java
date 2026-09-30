@@ -1,8 +1,9 @@
-package br.com.family.manutencao_preventiva.controller;
+package br.com.family.manutencao_preventiva.modules.veiculo.controller;
 
 import br.com.family.manutencao_preventiva.dto.request.VeiculoRequestDTO;
+import br.com.family.manutencao_preventiva.dto.response.VeiculoProntuarioResumoDTO;
 import br.com.family.manutencao_preventiva.dto.response.VeiculoResponseDTO;
-import br.com.family.manutencao_preventiva.service.VeiculoService;
+import br.com.family.manutencao_preventiva.modules.veiculo.service.VeiculoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,12 @@ public class VeiculoController {
         var veiculo = veiculoService.criar(veiculoRequestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(veiculo);
+    }
+
+    @GetMapping("/{id}/prontuario/resumo")
+    public ResponseEntity<VeiculoProntuarioResumoDTO> getResumoProntuario(@PathVariable Long id) {
+        VeiculoProntuarioResumoDTO resumo = veiculoService.buscarResumoProntuario(id);
+        return ResponseEntity.ok(resumo);
     }
 
     @GetMapping

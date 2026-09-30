@@ -1,5 +1,6 @@
-package br.com.family.manutencao_preventiva.domain.model;
+package br.com.family.manutencao_preventiva.modules.veiculo.domain;
 
+import br.com.family.manutencao_preventiva.domain.enums.StatusVeiculo;
 import br.com.family.manutencao_preventiva.domain.enums.TipoVeiculo;
 import br.com.family.manutencao_preventiva.exception.BusinessException;
 import jakarta.persistence.*;
@@ -43,6 +44,10 @@ public class Veiculo {
     @Column(nullable = false)
     @Setter
     private TipoVeiculo tipo;
+
+    @Enumerated(EnumType.STRING)
+    @Setter
+    private StatusVeiculo status = StatusVeiculo.DISPONIVEL;
 
     @Column(nullable = false)
     private boolean ativo = true;

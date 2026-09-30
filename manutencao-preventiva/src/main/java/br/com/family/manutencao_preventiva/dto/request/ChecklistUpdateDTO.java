@@ -11,5 +11,8 @@ public record ChecklistUpdateDTO(
     public record ItemRespostaDTO(
             Long itemId,
             RespostaItem resposta,
-            String observacao) {}
+            String observacao,
+            String fotoPath) {
+
+    }
 }

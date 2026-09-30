@@ -1,20 +1,31 @@
 package br.com.family.manutencao_preventiva.service;
-import br.com.family.manutencao_preventiva.domain.enums.StatusChecklist;
-import br.com.family.manutencao_preventiva.domain.enums.StatusViagem;
-import br.com.family.manutencao_preventiva.domain.model.*;
+
+import br.com.family.manutencao_preventiva.domain.enums.*;
+import br.com.family.manutencao_preventiva.domain.model.Checklist;
+import br.com.family.manutencao_preventiva.domain.model.ChecklistTemplate;
+import br.com.family.manutencao_preventiva.domain.model.Motorista;
+import br.com.family.manutencao_preventiva.domain.model.Viagem;
 import br.com.family.manutencao_preventiva.dto.request.ChecklistRequestDTO;
-import br.com.family.manutencao_preventiva.dto.response.ViagemResponseDTO;
+import br.com.family.manutencao_preventiva.dto.response.*;
 import br.com.family.manutencao_preventiva.exception.BusinessException;
 import br.com.family.manutencao_preventiva.mapper.ChecklistMapper;
-import br.com.family.manutencao_preventiva.mapper.ViagemMapper;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.Veiculo;
+import br.com.family.manutencao_preventiva.modules.veiculo.service.VeiculoService;
 import br.com.family.manutencao_preventiva.repository.ChecklistTemplateRepository;
-import br.com.family.manutencao_preventiva.repository.VeiculoRepository;
 import br.com.family.manutencao_preventiva.repository.ViagemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,50 +33,57 @@ import java.util.Optional;
 public class ViagemService {
 
     private final ViagemRepository viagemRepository;
-    private final VeiculoRepository veiculoRepository;
+
+    private final VeiculoService veiculoService;
     private final ChecklistTemplateRepository templateRepository;
 
     private final ChecklistMapper checklistMapper;
-    private final ViagemMapper viagemMapper;
 
     @Transactional
-    public ViagemResponseDTO iniciarViagem(ChecklistRequestDTO dto, Motorista motorista) {
+    public ViagemDetalhadaDTO iniciarViagem(ChecklistRequestDTO dto, Motorista motorista) {
 
-        var veiculoOcupado = viagemRepository.findByVeiculoIdAndStatus(dto.veiculoId(), StatusViagem.EM_CURSO);
-
-        if (veiculoOcupado.isPresent()) {
+        // 1. Verificação de veículo ocupado
+        if (viagemRepository.existsByVeiculoIdAndStatus(dto.veiculoId(), StatusViagem.EM_CURSO)) {
             throw new BusinessException("Este veículo já possui uma viagem em curso.");
         }
 
-        Veiculo veiculo = veiculoRepository.findById(dto.veiculoId())
-                .orElseThrow(() -> new BusinessException("Veículo não encontrado"));
+        Veiculo veiculo = veiculoService.buscarPorId(dto.veiculoId());
 
-        ChecklistTemplate template = templateRepository.findById(dto.templateId())
+        ChecklistTemplate template = templateRepository.findById(dto.templateId()) // Usando o ID do template vindo do DTO
                 .orElseThrow(() -> new BusinessException("Template não encontrado"));
 
         veiculo.validarNovaQuilometragem(dto.kmAtual());
 
+        veiculo.setStatus(StatusVeiculo.EM_USO);
+
+
+        // 2. Criação da Viagem
         Viagem viagem = new Viagem();
         viagem.setVeiculo(veiculo);
         viagem.setMotorista(motorista);
         viagem.setKmSaida(dto.kmAtual());
+        viagem.setStatus(StatusViagem.EM_CURSO);
+        viagem.setUltimoTipoChecklist("SAIDA");
 
-        Checklist checklistSaida = checklistMapper.toEntity(dto ,template);
+        Checklist checklistSaida = new Checklist();
         checklistSaida.setTipo("SAIDA");
+        checklistSaida.setKmAtual(dto.kmAtual());
+        checklistSaida.setTemplate(template);
+        checklistSaida.setViagem(viagem);
+        checklistSaida.setStatus(StatusChecklist.ABERTO);
 
         template.getItens().forEach(itemTemplate -> {
-            ChecklistItem novoItem = checklistMapper.toChecklistItem(itemTemplate);
-            checklistSaida.addItem(novoItem);
+            checklistSaida.addItem(checklistMapper.toChecklistItem(itemTemplate));
         });
 
         viagem.addChecklist(checklistSaida);
-        Viagem viagemSalva = viagemRepository.save(viagem);
 
-        return viagemMapper.toResponseDTO(viagemSalva);
+        Viagem viagemSalva = viagemRepository.save(viagem);
+        return montarDetalhado(viagemSalva);
     }
 
     @Transactional
-    public ViagemResponseDTO abrirChecklistRetorno(Long viagemId, ChecklistRequestDTO dto) {
+    public ViagemDetalhadaDTO abrirChecklistRetorno(Long viagemId, ChecklistRequestDTO dto) {
 
         Viagem viagem = viagemRepository.findById(viagemId)
                 .orElseThrow(() -> new BusinessException("Viagem não encontrada"));
@@ -77,33 +95,43 @@ public class ViagemService {
                 .findFirst();
 
         if (retornoExistente.isPresent()) {
-            return viagemMapper.toResponseDTO(viagem);
+            return montarDetalhado(viagem);
         }
 
         ChecklistTemplate template = viagem.getChecklists().stream()
                 .filter(c -> "SAIDA".equals(c.getTipo()))
                 .map(Checklist::getTemplate)
                 .findFirst()
-                .orElseThrow(() -> new BusinessException("Template de saída não encontrado para esta viagem."));
+                .orElseThrow(() -> new BusinessException("Template de saída não encontrado."));
 
+        // Cria o Checklist de RETORNO
         Checklist checklistRetorno = new Checklist();
         checklistRetorno.setTipo("RETORNO");
         checklistRetorno.setKmAtual(dto.kmAtual());
         checklistRetorno.setTemplate(template);
         checklistRetorno.setViagem(viagem);
+        checklistRetorno.setStatus(StatusChecklist.ABERTO);
 
         template.getItens().forEach(itemTemp -> {
             checklistRetorno.addItem(checklistMapper.toChecklistItem(itemTemp));
         });
 
         viagem.addChecklist(checklistRetorno);
+        viagem.setUltimoTipoChecklist("RETORNO");
         viagem.setKmRetorno(dto.kmAtual());
 
-        return viagemMapper.toResponseDTO(viagemRepository.save(viagem));
+        Viagem viagemSalva = viagemRepository.save(viagem);
+        return montarDetalhado(viagemSalva);
     }
 
     @Transactional
-    public ViagemResponseDTO finalizarViagem(Long viagemId) {
+    public Viagem buscarPorId(long id) {
+        return viagemRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Viagem não encontrada."));
+    }
+
+    @Transactional
+    public ViagemResumoDTO finalizarViagem(Long viagemId) {
         Viagem viagem = viagemRepository.findById(viagemId)
                 .orElseThrow(() -> new BusinessException("Viagem não encontrada"));
 
@@ -118,18 +146,78 @@ public class ViagemService {
 
         viagem.setStatus(StatusViagem.CONCLUIDA);
         viagem.setDataFim(LocalDateTime.now());
-
-        viagem.getVeiculo().setKmAtual(checklistRetorno.getKmAtual());
         viagem.setKmRetorno(checklistRetorno.getKmAtual());
 
-        return viagemMapper.toResponseDTO(viagemRepository.save(viagem));
+        viagem.getVeiculo().setKmAtual(checklistRetorno.getKmAtual());
+
+        boolean temProblemaCritico = checklistRetorno.getItens().stream()
+                .anyMatch(item -> item.getRespostaItem() == RespostaItem.NAO_OK
+                        && item.getCriticidade() == NivelCriticidade.ALTA);
+
+        if (temProblemaCritico) {
+            viagem.getVeiculo().setStatus(StatusVeiculo.EM_MANUTENCAO);
+        } else {
+            viagem.getVeiculo().setStatus(StatusVeiculo.DISPONIVEL);
+        }
+
+        viagemRepository.save(viagem);
+
+        return viagemRepository.findResumoPorId(viagemId)
+                .orElseThrow(() -> new BusinessException("Erro ao recuperar resumo da viagem finalizada"));
     }
 
     @Transactional(readOnly = true)
-    public ViagemResponseDTO buscarViagemAtiva(Motorista motorista) {
-        return viagemRepository.findByMotoristaIdAndStatus(motorista.getId(), StatusViagem.EM_CURSO)
-                .map(viagemMapper::toResponseDTO)
+    public ViagemResumoDTO buscarViagemAtiva(Long motoristaId) {
+        return viagemRepository.findViagemAtivaResumo(motoristaId, StatusViagem.EM_CURSO)
                 .orElse(null);
+    }
+
+    @Transactional
+    public List<Viagem> viagensAtivas() {
+        return viagemRepository.findByStatusOrderByDataInicioDesc(StatusViagem.EM_CURSO);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ViagemResumoDTO> listarHistorico(
+            Long motoristaId,
+            LocalDate inicio,
+            LocalDate fim,
+            int pagina,
+            int tamanho
+    ) {
+        LocalDateTime dataInicio = (inicio != null) ? inicio.atStartOfDay() : null;
+
+        LocalDateTime dataFim = (fim != null) ? fim.atTime(LocalTime.MAX) : null;
+
+        Pageable pageable = PageRequest.of(pagina, tamanho, Sort.by("dataInicio").descending());
+
+        return viagemRepository.findComFiltro(motoristaId, dataInicio, dataFim, pageable);
+    }
+
+    public EstatisticasMotoristaDTO buscarEstatisticasDoMotorista(Long motoristaId) {
+        LocalDateTime inicioDoMes = YearMonth.now().atDay(1).atStartOfDay();
+
+        Integer viagens = viagemRepository.contarViagensNoMes(motoristaId, inicioDoMes);
+        Long kmRodados = viagemRepository.somarKmRodadosNoMes(motoristaId, inicioDoMes);
+
+        // Tratamento para caso ele não tenha viagens no mês (o SUM retorna null)
+        kmRodados = (kmRodados != null) ? kmRodados : 0L;
+        viagens = (viagens != null) ? viagens : 0;
+
+        Optional<Viagem> ultimaViagemOpt = viagemRepository.findFirstByMotoristaIdAndStatusOrderByDataInicioDesc(motoristaId, StatusViagem.CONCLUIDA);
+
+        UltimaViagemResumoDTO ultimaViagemDTO = null;
+        if (ultimaViagemOpt.isPresent()) {
+            Viagem v = ultimaViagemOpt.get();
+            ultimaViagemDTO = new UltimaViagemResumoDTO(
+                    v.getId(),
+                    v.getDataFim() != null ? v.getDataFim().toString() : v.getDataInicio().toString(),
+                    v.getVeiculo().getPlaca(),
+                    v.getVeiculo().getModelo()
+            );
+        }
+
+        return new EstatisticasMotoristaDTO(viagens, kmRodados, ultimaViagemDTO);
     }
 
     private void validarPreRequisitosRetorno(Viagem viagem, Integer kmRetornoDigitado) {
@@ -151,6 +239,36 @@ public class ViagemService {
         if (saidaPendente) {
             throw new BusinessException("O checklist de saída ainda está aberto. Finalize-o antes de iniciar o retorno.");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Integer contarViagensDoVeiculoNoMes(Long veiculoId, LocalDateTime inicioDoMes) {
+        return viagemRepository.contarViagensDoVeiculoNoMes(veiculoId, inicioDoMes);
+    }
+
+    @Transactional(readOnly = true)
+    public Long somarKmDoVeiculoNoMes(Long veiculoId, LocalDateTime inicioDoMes) {
+        return viagemRepository.somarKmDoVeiculoNoMes(veiculoId, inicioDoMes);
+    }
+
+
+    private ViagemDetalhadaDTO montarDetalhado(Viagem viagem) {
+        ViagemResumoDTO resumo = viagemRepository.findResumoPorId(viagem.getId())
+                .orElseThrow(() -> new BusinessException("Erro ao gerar resumo"));
+
+        Checklist checklistAtivo = viagem.getChecklists().stream()
+                .filter(c -> c.getTipo().equals(viagem.getUltimoTipoChecklist()))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException("Checklist não encontrado"));
+
+        List<ChecklistItemResponseDTO> itensDto = checklistAtivo.getItens().stream()
+                .map(checklistMapper::toItemDTO)
+                .toList();
+
+        return new ViagemDetalhadaDTO(
+                resumo,
+                new ChecklistAtualDTO(checklistAtivo.getId(), itensDto)
+        );
     }
 }
 

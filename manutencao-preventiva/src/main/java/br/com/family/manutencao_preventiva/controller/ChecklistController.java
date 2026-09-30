@@ -20,6 +20,12 @@ public class ChecklistController {
 
     private final ChecklistService checklistService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ChecklistResponseDTO> buscarPorId(@PathVariable Long id) {
+        ChecklistResponseDTO dto = checklistService.buscarPorId(id);
+        return ResponseEntity.ok(dto);
+    }
+
     @PatchMapping("/{id}/finalizar")
     public ResponseEntity<Void> salvarRespostas(
             @PathVariable Long id,

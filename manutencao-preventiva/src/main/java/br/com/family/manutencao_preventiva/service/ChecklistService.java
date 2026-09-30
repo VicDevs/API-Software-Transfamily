@@ -2,20 +2,16 @@ package br.com.family.manutencao_preventiva.service;
 
 import br.com.family.manutencao_preventiva.domain.enums.RespostaItem;
 import br.com.family.manutencao_preventiva.domain.enums.StatusChecklist;
-import br.com.family.manutencao_preventiva.domain.enums.StatusViagem;
-import br.com.family.manutencao_preventiva.domain.model.*;
+import br.com.family.manutencao_preventiva.domain.model.Checklist;
+import br.com.family.manutencao_preventiva.domain.model.ChecklistItem;
 import br.com.family.manutencao_preventiva.dto.request.ChecklistUpdateDTO;
 import br.com.family.manutencao_preventiva.dto.response.ChecklistResponseDTO;
 import br.com.family.manutencao_preventiva.exception.BusinessException;
 import br.com.family.manutencao_preventiva.mapper.ChecklistMapper;
-import br.com.family.manutencao_preventiva.mapper.CheklistTemplateMapper;
-import br.com.family.manutencao_preventiva.mapper.VeiculoMapper;
 import br.com.family.manutencao_preventiva.repository.ChecklistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,8 +20,14 @@ public class ChecklistService {
 
     private final ChecklistRepository checklistRepository;
     private final ChecklistMapper checklistMapper;
-    private final VeiculoMapper veiculoMapper;
-    private final CheklistTemplateMapper templateMapper;
+
+    @Transactional(readOnly = true)
+    public ChecklistResponseDTO buscarPorId(Long id) {
+        Checklist checklist = checklistRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Checklist não encontrado."));
+
+        return checklistMapper.toResponseDTO(checklist);
+    }
 
     @Transactional
     public ChecklistResponseDTO salvarEFinalizar(Long checklistId, ChecklistUpdateDTO lote) {
@@ -39,15 +41,6 @@ public class ChecklistService {
 
         checklist.finalizar();
 
-        if ("RETORNO".equalsIgnoreCase(checklist.getTipo())) {
-            Viagem viagem = checklist.getViagem();
-            viagem.setStatus(StatusViagem.CONCLUIDA);
-            viagem.setDataFim(LocalDateTime.now());
-            viagem.setKmRetorno(checklist.getKmAtual());
-
-            checklist.getViagem().getVeiculo().atualizarQuilometragem(checklist.getKmAtual());
-        }
-
         return checklistMapper.toResponseDTO(checklistRepository.save(checklist));
     }
 
@@ -60,6 +53,7 @@ public class ChecklistService {
             if (item != null) {
                 item.setRespostaItem(resp.resposta());
                 item.setObservacao(resp.observacao());
+                item.setFotoPath(resp.fotoPath());
             }
         }
 

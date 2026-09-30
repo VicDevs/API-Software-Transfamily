@@ -7,5 +7,6 @@ public record ChecklistItemResponseDTO(
         String descricao,
         Integer ordem,
         RespostaItem resposta,
-        String observacao
+        String observacao,
+        String fotoPath
 ) {}

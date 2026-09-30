@@ -1,6 +1,7 @@
 package br.com.family.manutencao_preventiva.domain.model;
 
 import br.com.family.manutencao_preventiva.domain.enums.StatusViagem;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.Veiculo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,9 +46,15 @@ public class Viagem {
     @Setter
     private StatusViagem status;
 
-    @OneToMany(mappedBy = "viagem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "ultimo_tipo_checklist")
     @Setter
+    private String ultimoTipoChecklist = "NENHUM";
+
+    @OneToMany(mappedBy = "viagem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Checklist> checklists = new ArrayList<>();
+
+    @OneToMany(mappedBy = "viagem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ocorrencia> ocorrencias = new ArrayList<>();
 
     public Integer getKmRodado() {
         if (kmSaida != null && kmRetorno != null) {
@@ -68,5 +75,10 @@ public class Viagem {
     public void addChecklist(Checklist checklist) {
         this.checklists.add(checklist);
         checklist.setViagem(this);
+    }
+
+    public void addOcorrencia(Ocorrencia ocorrencia) {
+        this.ocorrencias.add(ocorrencia);
+        ocorrencia.setViagem(this);
     }
 }

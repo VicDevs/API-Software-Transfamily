@@ -1,10 +1,12 @@
 package br.com.family.manutencao_preventiva.controller;
 
 import br.com.family.manutencao_preventiva.domain.model.User;
+import br.com.family.manutencao_preventiva.dto.request.AlterarSenhaDTO;
 import br.com.family.manutencao_preventiva.dto.request.AuthenticationDTO;
 import br.com.family.manutencao_preventiva.dto.response.LoginResponseDTO;
 import br.com.family.manutencao_preventiva.repository.UserRepository;
 import br.com.family.manutencao_preventiva.service.TokenService;
+import br.com.family.manutencao_preventiva.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,13 +28,12 @@ public class AuthenticationController {
 
     private final TokenService tokenService;
 
-    private final UserRepository userRepository;
+    private final UserService  userService;
 
     @GetMapping("/me")
     public ResponseEntity<LoginResponseDTO> me(Authentication authentication) {
 
-        var usuario = userRepository.findByCpf(authentication.getName())
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+        var usuario = (User) authentication.getPrincipal();
 
         return ResponseEntity.ok(new LoginResponseDTO(
                 usuario.getNome(),
@@ -52,10 +54,10 @@ public class AuthenticationController {
 
         ResponseCookie jwtCookie = ResponseCookie.from("accessToken", token)
                 .httpOnly(true)
-                .secure(false)    // false para HTTP (IP da rede), true para HTTPS
+                .secure(true)
                 .path("/")
                 .maxAge(7200)
-                .sameSite("Lax")  // Crucial para o navegador aceitar o cookie em domínios/portas diferentes
+                .sameSite("None")
                 .build();
 
         // 4. Retorna os dados do motorista SEM o token no corpo
@@ -66,5 +68,15 @@ public class AuthenticationController {
                         user.getCpf(),
                         user.getRole()
                 ));
+    }
+
+    @PutMapping("/me/senha")
+    public ResponseEntity<Void> alterarSenha(
+            @RequestBody @Valid AlterarSenhaDTO dto,
+            @AuthenticationPrincipal User logado
+    ) {
+        userService.alterarSenha(logado.getId(), dto);
+
+        return ResponseEntity.noContent().build();
     }
 }

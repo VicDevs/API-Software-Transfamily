@@ -48,4 +48,16 @@ public class TokenService {
                 .plusHours(2)
                 .toInstant(ZoneOffset.of("-03:00"));
     }
+    public String extrairRole(String token) {
+        try {
+            Algorithm algoritmo = Algorithm.HMAC256(secret);
+            return JWT.require(algoritmo)
+                    .withIssuer("auth-api")
+                    .build()
+                    .verify(token)
+                    .getClaim("role").asString();
+        } catch (JWTVerificationException exception) {
+            return null;
+        }
+    }
 }
