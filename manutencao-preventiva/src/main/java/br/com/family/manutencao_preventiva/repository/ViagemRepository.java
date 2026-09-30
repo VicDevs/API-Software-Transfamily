@@ -19,7 +19,6 @@ public interface ViagemRepository extends JpaRepository<Viagem, Long> {
 
     boolean existsByVeiculoIdAndStatus(Long veiculoId, StatusViagem status);
 
-    // 1. Query para a Home (Busca ativa) - JÁ CORRIGIDA
     @Query("""
         SELECT new br.com.family.manutencao_preventiva.dto.response.ViagemResumoDTO(
             v.id, 
@@ -40,7 +39,42 @@ public interface ViagemRepository extends JpaRepository<Viagem, Long> {
     """)
     Optional<ViagemResumoDTO> findViagemAtivaResumo(Long motoristaId, StatusViagem status);
 
-    // 2. Query para o Histórico (Com filtro e paginação) - CORRIGIDA AGORA
+    @Query(value = """
+        SELECT new br.com.family.manutencao_preventiva.dto.response.ViagemResumoDTO(
+            v.id,
+            v.veiculo.placa,
+            v.veiculo.modelo,
+            v.dataInicio,
+            v.dataFim,
+            v.kmSaida,
+            v.kmRetorno,
+            v.status,
+            v.ultimoTipoChecklist,
+            c.status,
+            c.id
+        )
+        FROM Viagem v
+        LEFT JOIN Checklist c ON c.viagem.id = v.id AND c.tipo = v.ultimoTipoChecklist
+        WHERE v.motorista.id = :motoristaId
+        AND (:inicio IS NULL OR v.dataInicio >= :inicio)
+        AND (:fim IS NULL OR v.dataInicio <= :fim)
+    """,
+            countQuery = """
+        SELECT COUNT(v) 
+        FROM Viagem v 
+        WHERE v.motorista.id = :motoristaId
+        AND (:inicio IS NULL OR v.dataInicio >= :inicio)
+        AND (:fim IS NULL OR v.dataInicio <= :fim)
+    """)
+    Page<ViagemResumoDTO> findComFiltro(
+            Long motoristaId,
+            LocalDateTime inicio,
+            LocalDateTime fim,
+            Pageable pageable
+    );
+
+
+    // 3. Query para retorno de ID único (Pós-save) - CORRIGIDA AGORA
     @Query("""
         SELECT new br.com.family.manutencao_preventiva.dto.response.ViagemResumoDTO(
             v.id,
@@ -56,33 +90,6 @@ public interface ViagemRepository extends JpaRepository<Viagem, Long> {
             (SELECT c.id FROM Checklist c WHERE c.viagem.id = v.id AND c.tipo = v.ultimoTipoChecklist)
         )
         FROM Viagem v
-        WHERE v.motorista.id = :motoristaId
-        AND (:inicio IS NULL OR v.dataInicio >= :inicio)
-        AND (:fim IS NULL OR v.dataInicio <= :fim)
-    """)
-    Page<ViagemResumoDTO> findComFiltro(
-            Long motoristaId,
-            LocalDateTime inicio,
-            LocalDateTime fim,
-            Pageable pageable
-    );
-
-    // 3. Query para retorno de ID único (Pós-save) - CORRIGIDA AGORA
-    @Query("""
-        SELECT new br.com.family.manutencao_preventiva.dto.response.ViagemResumoDTO(
-            v.id, 
-            v.veiculo.placa, 
-            v.veiculo.modelo, 
-            v.dataInicio, 
-            v.dataFim, 
-            v.kmSaida, 
-            v.kmRetorno, 
-            v.status, 
-            v.ultimoTipoChecklist,
-            (SELECT c.status FROM Checklist c WHERE c.viagem.id = v.id AND c.tipo = v.ultimoTipoChecklist),
-            (SELECT c.id FROM Checklist c WHERE c.viagem.id = v.id AND c.tipo = v.ultimoTipoChecklist)
-        )
-        FROM Viagem v 
         WHERE v.id = :id
     """)
     Optional<ViagemResumoDTO> findResumoPorId(Long id);
