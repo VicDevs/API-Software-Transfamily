@@ -2,10 +2,12 @@ package br.com.family.manutencao_preventiva.modules.checklist.mapper;
 
 import br.com.family.manutencao_preventiva.domain.model.*;
 import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistRequestDTO;
-import br.com.family.manutencao_preventiva.dto.response.ChecklistItemResponseDTO;
+import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistItemResponseDTO;
 import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistResponseDTO;
 import br.com.family.manutencao_preventiva.modules.checklist.domain.model.Checklist;
 import br.com.family.manutencao_preventiva.modules.checklist.repository.ChecklistRepository;
+import br.com.family.manutencao_preventiva.modules.checklist.domain.model.ChecklistItem;
+import br.com.family.manutencao_preventiva.modules.checklistTemplate.domain.model.ChecklistTemplate;
 import jakarta.persistence.EntityNotFoundException;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,6 +1,6 @@
 package br.com.family.manutencao_preventiva.controller;
 
-import br.com.family.manutencao_preventiva.domain.model.Motorista;
+import br.com.family.manutencao_preventiva.modules.motorista.domain.model.Motorista;
 import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistRequestDTO;
 import br.com.family.manutencao_preventiva.dto.response.ViagemDetalhadaDTO;
 import br.com.family.manutencao_preventiva.dto.response.ViagemResumoDTO;

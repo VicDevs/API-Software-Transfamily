@@ -2,6 +2,8 @@ package br.com.family.manutencao_preventiva.domain.model;
 
 import br.com.family.manutencao_preventiva.domain.enums.StatusViagem;
 import br.com.family.manutencao_preventiva.modules.checklist.domain.model.Checklist;
+import br.com.family.manutencao_preventiva.modules.motorista.domain.model.Motorista;
+import br.com.family.manutencao_preventiva.modules.ocorrencia.domain.model.Ocorrencia;
 import br.com.family.manutencao_preventiva.modules.veiculo.domain.model.Veiculo;
 import jakarta.persistence.*;
 import lombok.Getter;

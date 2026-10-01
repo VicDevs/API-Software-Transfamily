@@ -11,5 +11,4 @@ public class    ManutencaoPreventivaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ManutencaoPreventivaApplication.class, args);
 	}
-
 }

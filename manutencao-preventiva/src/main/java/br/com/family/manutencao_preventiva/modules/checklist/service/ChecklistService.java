@@ -1,9 +1,9 @@
 package br.com.family.manutencao_preventiva.modules.checklist.service;
 
-import br.com.family.manutencao_preventiva.domain.enums.RespostaItem;
+import br.com.family.manutencao_preventiva.modules.checklist.domain.enums.RespostaItem;
 import br.com.family.manutencao_preventiva.modules.checklist.domain.enums.StatusChecklist;
 import br.com.family.manutencao_preventiva.modules.checklist.domain.model.Checklist;
-import br.com.family.manutencao_preventiva.domain.model.ChecklistItem;
+import br.com.family.manutencao_preventiva.modules.checklist.domain.model.ChecklistItem;
 import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistUpdateDTO;
 import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistResponseDTO;
 import br.com.family.manutencao_preventiva.exception.BusinessException;

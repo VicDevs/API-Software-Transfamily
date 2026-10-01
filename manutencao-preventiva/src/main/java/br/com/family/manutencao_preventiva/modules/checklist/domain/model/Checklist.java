@@ -1,8 +1,7 @@
 package br.com.family.manutencao_preventiva.modules.checklist.domain.model;
 
 import br.com.family.manutencao_preventiva.modules.checklist.domain.enums.StatusChecklist;
-import br.com.family.manutencao_preventiva.domain.model.ChecklistItem;
-import br.com.family.manutencao_preventiva.domain.model.ChecklistTemplate;
+import br.com.family.manutencao_preventiva.modules.checklistTemplate.domain.model.ChecklistTemplate;
 import br.com.family.manutencao_preventiva.domain.model.Viagem;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package br.com.family.manutencao_preventiva.controller;
 
 import br.com.family.manutencao_preventiva.dto.response.DashboardResumoDTO;
-import br.com.family.manutencao_preventiva.dto.response.OcorrenciaResumoDTO;
+import br.com.family.manutencao_preventiva.modules.ocorrencia.dto.OcorrenciaResumoDTO;
 import br.com.family.manutencao_preventiva.dto.response.ViagemAtivaDTO;
 import br.com.family.manutencao_preventiva.service.DashboardService;
 import lombok.RequiredArgsConstructor;
