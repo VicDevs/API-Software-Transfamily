@@ -1,14 +1,15 @@
-package br.com.family.manutencao_preventiva.service;
+package br.com.family.manutencao_preventiva.modules.dashboard.service;
 
 import br.com.family.manutencao_preventiva.domain.enums.NivelCriticidade;
 import br.com.family.manutencao_preventiva.modules.ocorrencia.domain.enums.TipoOcorrencia;
 import br.com.family.manutencao_preventiva.modules.ocorrencia.domain.model.Ocorrencia;
 import br.com.family.manutencao_preventiva.domain.model.Viagem;
-import br.com.family.manutencao_preventiva.dto.response.DashboardResumoDTO;
+import br.com.family.manutencao_preventiva.modules.dashboard.dto.DashboardResumoDTO;
 import br.com.family.manutencao_preventiva.modules.ocorrencia.dto.OcorrenciaResumoDTO;
 import br.com.family.manutencao_preventiva.dto.response.ViagemAtivaDTO;
 import br.com.family.manutencao_preventiva.modules.ocorrencia.service.OcorrenciaService;
 import br.com.family.manutencao_preventiva.modules.veiculo.service.VeiculoService;
+import br.com.family.manutencao_preventiva.service.ViagemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

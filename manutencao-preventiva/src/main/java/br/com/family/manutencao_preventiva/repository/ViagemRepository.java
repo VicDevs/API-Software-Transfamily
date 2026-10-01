@@ -21,7 +21,7 @@ public interface ViagemRepository extends JpaRepository<Viagem, Long> {
 
     @Query("""
         SELECT new br.com.family.manutencao_preventiva.dto.response.ViagemResumoDTO(
-            v.id, 
+            v.id,
             v.veiculo.placa, 
             v.veiculo.modelo, 
             v.dataInicio, 

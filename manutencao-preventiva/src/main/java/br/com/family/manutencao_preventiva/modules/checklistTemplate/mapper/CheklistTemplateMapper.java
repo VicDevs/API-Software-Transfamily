@@ -1,7 +1,7 @@
 package br.com.family.manutencao_preventiva.modules.checklistTemplate.mapper;
 
 import br.com.family.manutencao_preventiva.modules.checklistTemplate.domain.model.ChecklistTemplate;
-import br.com.family.manutencao_preventiva.domain.model.ChecklistTemplateItem;
+import br.com.family.manutencao_preventiva.modules.checklistTemplate.domain.model.ChecklistTemplateItem;
 import br.com.family.manutencao_preventiva.dto.request.ChecklistTemplateItemDTO;
 import br.com.family.manutencao_preventiva.modules.checklistTemplate.dto.ChecklistTemplateRequestDTO;
 import br.com.family.manutencao_preventiva.modules.checklistTemplate.dto.ChecklistTemplateResponseDTO;

@@ -1,7 +1,7 @@
-package br.com.family.manutencao_preventiva.domain.model;
+package br.com.family.manutencao_preventiva.modules.manutencao.domain.model;
 
-import br.com.family.manutencao_preventiva.domain.enums.StatusManutencao;
-import br.com.family.manutencao_preventiva.domain.enums.TipoManutencao;
+import br.com.family.manutencao_preventiva.modules.manutencao.domain.enums.StatusManutencao;
+import br.com.family.manutencao_preventiva.modules.manutencao.domain.enums.TipoManutencao;
 import br.com.family.manutencao_preventiva.modules.veiculo.domain.model.Veiculo;
 import jakarta.persistence.*;
 import lombok.Getter;

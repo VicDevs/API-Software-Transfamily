@@ -1,8 +1,7 @@
-package br.com.family.manutencao_preventiva.domain.model;
+package br.com.family.manutencao_preventiva.modules.checklistTemplate.domain.model;
 
 import br.com.family.manutencao_preventiva.domain.enums.NivelCriticidade;
 import br.com.family.manutencao_preventiva.exception.BusinessException;
-import br.com.family.manutencao_preventiva.modules.checklistTemplate.domain.model.ChecklistTemplate;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

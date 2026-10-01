@@ -1,4 +1,4 @@
-package br.com.family.manutencao_preventiva.domain.model;
+package br.com.family.manutencao_preventiva.modules.manutencao.domain.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;

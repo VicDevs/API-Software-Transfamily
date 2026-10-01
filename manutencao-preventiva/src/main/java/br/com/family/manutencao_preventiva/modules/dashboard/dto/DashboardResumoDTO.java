@@ -1,4 +1,4 @@
-package br.com.family.manutencao_preventiva.dto.response;
+package br.com.family.manutencao_preventiva.modules.dashboard.dto;
 
 public record DashboardResumoDTO(
         long frotaTotal,

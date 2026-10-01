@@ -1,6 +1,6 @@
 package br.com.family.manutencao_preventiva.modules.veiculo.service;
 
-import br.com.family.manutencao_preventiva.domain.enums.StatusVeiculo;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.enums.StatusVeiculo;
 import br.com.family.manutencao_preventiva.modules.veiculo.domain.model.Veiculo;
 import br.com.family.manutencao_preventiva.dto.request.VeiculoRequestDTO;
 import br.com.family.manutencao_preventiva.dto.response.VeiculoProntuarioResumoDTO;

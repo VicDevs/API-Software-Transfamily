@@ -13,6 +13,7 @@ import br.com.family.manutencao_preventiva.modules.checklist.dto.ChecklistReques
 import br.com.family.manutencao_preventiva.dto.response.*;
 import br.com.family.manutencao_preventiva.exception.BusinessException;
 import br.com.family.manutencao_preventiva.modules.checklist.mapper.ChecklistMapper;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.enums.StatusVeiculo;
 import br.com.family.manutencao_preventiva.modules.veiculo.domain.model.Veiculo;
 import br.com.family.manutencao_preventiva.modules.veiculo.mapper.VeiculoMapper;
 import br.com.family.manutencao_preventiva.modules.checklistTemplate.repository.ChecklistTemplateRepository;

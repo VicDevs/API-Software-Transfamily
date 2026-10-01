@@ -1,15 +1,15 @@
 package br.com.family.manutencao_preventiva.modules.veiculo.mapper;
 
-import br.com.family.manutencao_preventiva.domain.enums.TipoVeiculo;
 import br.com.family.manutencao_preventiva.dto.request.VeiculoRequestDTO;
 import br.com.family.manutencao_preventiva.dto.response.VeiculoResponseDTO;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.enums.TipoVeiculo;
 import br.com.family.manutencao_preventiva.modules.veiculo.domain.model.Veiculo;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-09-30T22:53:06-0300",
+    date = "2026-10-01T00:33:10-0300",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component

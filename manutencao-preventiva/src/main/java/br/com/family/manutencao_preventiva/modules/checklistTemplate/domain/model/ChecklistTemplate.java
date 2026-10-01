@@ -1,7 +1,6 @@
 package br.com.family.manutencao_preventiva.modules.checklistTemplate.domain.model;
 
-import br.com.family.manutencao_preventiva.domain.enums.TipoVeiculo;
-import br.com.family.manutencao_preventiva.domain.model.ChecklistTemplateItem;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.enums.TipoVeiculo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

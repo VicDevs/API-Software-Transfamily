@@ -1,6 +1,6 @@
 package br.com.family.manutencao_preventiva.modules.checklistTemplate.repository;
 
-import br.com.family.manutencao_preventiva.domain.enums.TipoVeiculo;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.enums.TipoVeiculo;
 import br.com.family.manutencao_preventiva.modules.checklistTemplate.domain.model.ChecklistTemplate;
 import org.springframework.data.jpa.repository.JpaRepository;
 

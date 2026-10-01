@@ -1,6 +1,6 @@
 package br.com.family.manutencao_preventiva.modules.checklistTemplate.dto;
 
-import br.com.family.manutencao_preventiva.domain.enums.TipoVeiculo;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.enums.TipoVeiculo;
 import br.com.family.manutencao_preventiva.dto.response.ChecklistTemplateItemResponseDTO;
 
 import java.util.List;

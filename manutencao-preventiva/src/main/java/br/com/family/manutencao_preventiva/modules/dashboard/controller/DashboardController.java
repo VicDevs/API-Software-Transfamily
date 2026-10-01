@@ -1,9 +1,9 @@
-package br.com.family.manutencao_preventiva.controller;
+package br.com.family.manutencao_preventiva.modules.dashboard.controller;
 
-import br.com.family.manutencao_preventiva.dto.response.DashboardResumoDTO;
+import br.com.family.manutencao_preventiva.modules.dashboard.dto.DashboardResumoDTO;
 import br.com.family.manutencao_preventiva.modules.ocorrencia.dto.OcorrenciaResumoDTO;
 import br.com.family.manutencao_preventiva.dto.response.ViagemAtivaDTO;
-import br.com.family.manutencao_preventiva.service.DashboardService;
+import br.com.family.manutencao_preventiva.modules.dashboard.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

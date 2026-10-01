@@ -1,6 +1,6 @@
 package br.com.family.manutencao_preventiva.modules.checklistTemplate.controller;
 
-import br.com.family.manutencao_preventiva.domain.enums.TipoVeiculo;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.enums.TipoVeiculo;
 import br.com.family.manutencao_preventiva.modules.checklistTemplate.dto.ChecklistTemplateRequestDTO;
 import br.com.family.manutencao_preventiva.modules.checklistTemplate.dto.ChecklistTemplateResponseDTO;
 import br.com.family.manutencao_preventiva.modules.checklistTemplate.repository.ChecklistTemplateRepository;

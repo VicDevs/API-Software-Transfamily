@@ -1,13 +1,13 @@
 package br.com.family.manutencao_preventiva.modules.checklistTemplate.mapper;
 
 import br.com.family.manutencao_preventiva.domain.enums.NivelCriticidade;
-import br.com.family.manutencao_preventiva.domain.enums.TipoVeiculo;
 import br.com.family.manutencao_preventiva.domain.model.ChecklistTemplateItem;
 import br.com.family.manutencao_preventiva.dto.request.ChecklistTemplateItemDTO;
 import br.com.family.manutencao_preventiva.dto.response.ChecklistTemplateItemResponseDTO;
 import br.com.family.manutencao_preventiva.modules.checklistTemplate.domain.model.ChecklistTemplate;
 import br.com.family.manutencao_preventiva.modules.checklistTemplate.dto.ChecklistTemplateRequestDTO;
 import br.com.family.manutencao_preventiva.modules.checklistTemplate.dto.ChecklistTemplateResponseDTO;
+import br.com.family.manutencao_preventiva.modules.veiculo.domain.enums.TipoVeiculo;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-09-30T22:53:06-0300",
+    date = "2026-10-01T00:33:10-0300",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
